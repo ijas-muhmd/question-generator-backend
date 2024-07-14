@@ -21027,6 +21027,158 @@
       ],
       "id": "a0de1f52-0e70-41d7-8113-7ddda3bb5ba8",
       "examType": "NEET UG"
+    },
+    {
+      "question": "Which of the following statements accurately describes the role of ATP in human physiology?",
+      "question_type": "MCQ",
+      "explanation": "Option B is the correct answer as ATP is known as the 'molecular currency' of intracellular energy transfer, providing energy for cellular processes.",
+      "topic": "NEET UG",
+      "options": [
+        {
+          "option": "ATP is a waste product produced during cellular respiration",
+          "is_correct": false,
+          "explanation": "Incorrect",
+          "reason": "ATP is not a waste product but rather the primary energy carrier in cells",
+          "study_topic": "Biochemistry"
+        },
+        {
+          "option": "ATP is the main energy carrier in cells, providing energy for various cellular processes",
+          "is_correct": true,
+          "explanation": "Correct",
+          "reason": "ATP is known as the 'molecular currency' of intracellular energy transfer, providing energy for cellular processes",
+          "study_topic": "Biochemistry"
+        },
+        {
+          "option": "ATP is only used in muscle cells for contraction",
+          "is_correct": false,
+          "explanation": "Incorrect",
+          "reason": "ATP is utilized in all cells for numerous energy-requiring processes beyond muscle contraction",
+          "study_topic": "Biochemistry"
+        },
+        {
+          "option": "ATP is primarily involved in DNA replication",
+          "is_correct": false,
+          "explanation": "Incorrect",
+          "reason": "While ATP is necessary for some steps in DNA replication, its main role is cellular energy transfer, not DNA synthesis",
+          "study_topic": "Biochemistry"
+        }
+      ],
+      "id": "65abc1cf-c9c1-4c99-a182-6bd01a963790",
+      "examType": "NEET UG"
+    },
+    {
+      "question": "Which of the following enzymes is responsible for breaking down fats into glycerol and fatty acids during digestion?",
+      "question_type": "MCQ",
+      "explanation": "Lipase is the correct enzyme responsible for breaking down fats into glycerol and fatty acids.",
+      "topic": "NEET UG",
+      "options": [
+        {
+          "option": "Amylase",
+          "is_correct": false,
+          "explanation": "Amylase is responsible for breaking down carbohydrates into sugars, not fats.",
+          "reason": "Incorrect",
+          "study_topic": "Enzymes in digestion"
+        },
+        {
+          "option": "Pepsin",
+          "is_correct": false,
+          "explanation": "Pepsin is responsible for breaking down proteins into peptides, not fats.",
+          "reason": "Incorrect",
+          "study_topic": "Enzymes in digestion"
+        },
+        {
+          "option": "Lipase",
+          "is_correct": true,
+          "explanation": "Lipase is the correct enzyme responsible for breaking down fats into glycerol and fatty acids.",
+          "reason": "Correct",
+          "study_topic": "Enzymes in digestion"
+        },
+        {
+          "option": "Trypsin",
+          "is_correct": false,
+          "explanation": "Trypsin is responsible for breaking down proteins into peptides, not fats.",
+          "reason": "Incorrect",
+          "study_topic": "Enzymes in digestion"
+        }
+      ],
+      "id": "5876a81e-8229-42c5-b81c-039102c17a97",
+      "examType": "NEET UG"
+    },
+    {
+      "question": "Which of the following is a correct statement regarding the process of gas exchange in the human body?",
+      "question_type": "MCQ",
+      "explanation": "During inhalation, oxygen is taken in by the alveoli in the lungs and enters the bloodstream, while carbon dioxide is removed from the bloodstream and exhaled during exhalation.",
+      "topic": "NEET UG",
+      "options": [
+        {
+          "option": "Oxygen is exhaled and carbon dioxide is inhaled during the process of gas exchange.",
+          "is_correct": false,
+          "explanation": "This statement is incorrect as oxygen is taken in and carbon dioxide is removed during gas exchange.",
+          "reason": "Incorrect information about gas exchange",
+          "study_topic": "Human Physiology"
+        },
+        {
+          "option": "Gas exchange primarily occurs in the bronchi of the lungs.",
+          "is_correct": false,
+          "explanation": "Gas exchange mainly takes place in the alveoli of the lungs, not in the bronchi.",
+          "reason": "Incorrect location of gas exchange",
+          "study_topic": "Anatomy"
+        },
+        {
+          "option": "Hemoglobin in red blood cells binds to oxygen in the lungs and releases it to tissues throughout the body.",
+          "is_correct": true,
+          "explanation": "This statement correctly describes the role of hemoglobin in transporting oxygen from the lungs to body tissues.",
+          "reason": "Correct description of oxygen transport by hemoglobin",
+          "study_topic": "Biochemistry"
+        },
+        {
+          "option": "The diaphragm relaxes during exhalation, allowing the lungs to expand and take in more air.",
+          "is_correct": false,
+          "explanation": "The diaphragm contracts during inhalation to increase the volume of the thoracic cavity and allow for air intake.",
+          "reason": "Incorrect description of diaphragm function during breathing",
+          "study_topic": "Human Physiology"
+        }
+      ],
+      "id": "11a3c6fa-2721-4ed2-9360-75802beb8f0b",
+      "examType": "NEET UG"
+    },
+    {
+      "question": "In which of the following scenarios would the sympathetic nervous system be activated?",
+      "question_type": "MCQ",
+      "explanation": "Option C is correct because during exercise, the sympathetic nervous system is activated to increase heart rate and blood flow to muscles.",
+      "topic": "NEET UG",
+      "options": [
+        {
+          "option": "A patient in deep sleep",
+          "is_correct": false,
+          "explanation": "Incorrect",
+          "reason": "The parasympathetic nervous system is dominant during sleep, not the sympathetic nervous system.",
+          "study_topic": "Autonomic Nervous System"
+        },
+        {
+          "option": "A person experiencing a panic attack",
+          "is_correct": true,
+          "explanation": "Correct",
+          "reason": "During a panic attack, the sympathetic nervous system is activated, leading to symptoms like increased heart rate and sweating.",
+          "study_topic": "Autonomic Nervous System"
+        },
+        {
+          "option": "A patient lying down and reading a book",
+          "is_correct": false,
+          "explanation": "Incorrect",
+          "reason": "In a relaxed state, the parasympathetic nervous system is more active, not the sympathetic nervous system.",
+          "study_topic": "Autonomic Nervous System"
+        },
+        {
+          "option": "An individual's stomach digesting food after a meal",
+          "is_correct": false,
+          "explanation": "Incorrect",
+          "reason": "Digestion is mainly controlled by the parasympathetic nervous system, not the sympathetic nervous system.",
+          "study_topic": "Autonomic Nervous System"
+        }
+      ],
+      "id": "eb0bba28-3ce0-4172-946e-48eba8c7083e",
+      "examType": "NEET UG"
     }
   ]
 }

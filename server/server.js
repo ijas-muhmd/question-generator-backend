@@ -13,7 +13,7 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 
 app.use(cors({
-  origin: 'http://localhost:3000' // Update this to your frontend URL
+  origin: 'https://question-genarator.web.app/' // Update this to your frontend URL
 }));
 app.use(express.json());
 
