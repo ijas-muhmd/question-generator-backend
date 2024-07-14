@@ -12,8 +12,18 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 const app = express();
 const PORT = process.env.PORT || 5001;
 
+// app.use(cors({
+//   origin: 'https://question-genarator.web.app/' // Update this to your frontend URL
+// }));
+const allowedOrigins = ['https://question-generator.web.app'];
 app.use(cors({
-  origin: 'https://question-genarator.web.app/' // Update this to your frontend URL
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
 }));
 app.use(express.json());
 
