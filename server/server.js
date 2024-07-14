@@ -6,6 +6,7 @@ const axios = require('axios');
 const dotenv = require('dotenv');
 const { v4: uuidv4 } = require('uuid');
 const stringSimilarity = require('string-similarity');
+const mongoose = require('mongoose')
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
@@ -13,44 +14,54 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 
 app.use(cors({
-  origin: "*", // Update this to your frontend URL
+  origin: "*", 
 }));
-// const allowedOrigins = ['https://question-generator.web.app'];
-// app.use(cors({
-//   origin: (origin, callback) => {
-//     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   }
-// }));
+
 app.use(express.json());
 
-const QUESTIONS_DB_PATH = path.resolve(__dirname, 'questions.json');
-const EMAIL_DB_PATH = path.resolve(__dirname, 'emails.json');
+mongoose.connect(process.env.MONGODB_URL).then(() => {
+  console.log('Connected to MongoDB');
+}).catch(err => {
+  console.log('Error connecting to MongoDB:', err);
+});
 
-function loadQuestionsDB() {
-  if (fs.existsSync(QUESTIONS_DB_PATH)) {
-    return JSON.parse(fs.readFileSync(QUESTIONS_DB_PATH, 'utf8'));
-  } else {
-    return { questions: [] };
-  }
+const questionSchema = new mongoose.Schema({
+  question: String,
+  question_type: String,
+  explanation: String,
+  topic: String,
+  options: [{
+      option: String,
+      is_correct: Boolean,
+      explanation: String,
+      reason: String,
+      study_topic: String
+  }],
+  examType: String
+});
+
+const Question = mongoose.model('Question', questionSchema, 'questions'); 
+
+const emailSchema = new mongoose.Schema({
+  email: String,
+  examType: String,
+  timestamp: { type: Date, default: Date.now }
+});
+
+const Email = mongoose.model('Email', emailSchema, 'emails');
+
+
+async function getRandomQuestionByExamType(examType) {
+  const questions = await Question.find({ examType });
+  if (questions.length === 0) return null;
+  const randomIndex = Math.floor(Math.random() * questions.length);
+  return questions[randomIndex];
 }
 
-function saveQuestionsDB(data) {
-  fs.writeFileSync(QUESTIONS_DB_PATH, JSON.stringify(data, null, 2), 'utf8');
-}
 
-function getRandomQuestionByExamType(examType) {
-  const questionsDB = loadQuestionsDB();
-  const filteredQuestions = questionsDB.questions.filter(q => q.examType === examType && validateQuestionFormat(q));
-  if (filteredQuestions.length === 0) return null;
-  const randomIndex = Math.floor(Math.random() * filteredQuestions.length);
-  return filteredQuestions[randomIndex];
-}
 
-function isDuplicateQuestion(existingQuestions, newQuestion) {
+async function isDuplicateQuestion(newQuestion) {
+  const existingQuestions = await Question.find();
   return existingQuestions.some(q => {
     const similarity = stringSimilarity.compareTwoStrings(q.question, newQuestion);
     return similarity > 0.85; // Adjust the threshold as needed
@@ -123,6 +134,7 @@ async function fetchQuestionFromOpenAI(prompt) {
   }
 }
 
+
 app.post('/api/question', async (req, res) => {
   const { examType, fetchCount = 5 } = req.body;
   const examDetails = {
@@ -160,7 +172,6 @@ app.post('/api/question', async (req, res) => {
                   }`;
 
   try {
-    const questionsDB = loadQuestionsDB();
     const newQuestions = [];
     const startTime = Date.now();
 
@@ -168,13 +179,18 @@ app.post('/api/question', async (req, res) => {
       console.log(`Requesting question ${i + 1}...`);
 
       const questionData = await fetchQuestionFromOpenAI(prompt);
+      if (!await isDuplicateQuestion(questionData.question)) {
+        if (validateQuestionFormat(questionData)) {
+          const question = new Question({
+            ...questionData,
+            examType
+          });
 
-      if (!isDuplicateQuestion(questionsDB.questions, questionData.question)) {
-        const questionId = uuidv4();
-        questionData.id = questionId;
-        questionData.examType = examType;
-        questionsDB.questions.push(questionData);
-        newQuestions.push(questionData);
+          await question.save();
+          newQuestions.push(question);
+        } else {
+          console.log(`Invalid format for question ${i + 1}. Skipping.`);
+        }
       } else {
         console.log(`Duplicate question detected for question ${i + 1}. Skipping.`);
       }
@@ -182,7 +198,6 @@ app.post('/api/question', async (req, res) => {
       console.log(`Question ${i + 1} received and processed.`);
     }
 
-    saveQuestionsDB(questionsDB);
     const totalTime = Date.now() - startTime;
     console.log(`All questions generated in ${totalTime} ms.`);
     res.json({ questions: newQuestions, totalTime });
@@ -191,47 +206,52 @@ app.post('/api/question', async (req, res) => {
     console.error('Error while fetching questions from OpenAI:', error.message);
 
     if (error.message.includes('timed out')) {
-      const randomQuestion = getRandomQuestionByExamType(examType);
+      const randomQuestion = await getRandomQuestionByExamType(examType);
       if (randomQuestion) {
-        res.json({ questions: [randomQuestion] });
+        return res.json({ questions: [randomQuestion] });
       } else {
-        res.status(500).json({ error: `Failed to fetch questions: ${error.message}. No local questions available.` });
+        return res.status(500).json({ error: `Failed to fetch questions: ${error.message}. No local questions available.` });
       }
     } else {
-      res.status(500).json({ error: `Failed to fetch questions: ${error.message}` });
+      return res.status(500).json({ error: `Failed to fetch questions: ${error.message}` });
     }
   }
 });
 
-app.post('/api/random-question', (req, res) => {
+app.post('/api/random-question', async(req, res) => {
   console.log('Received request for random question:', req.body);
   const { examType } = req.body;
-  const randomQuestion = getRandomQuestionByExamType(examType);
-  if (randomQuestion) {
-    res.json({ questions: [randomQuestion] });
-  } else {
-    res.status(404).json({ error: 'No questions available for the specified exam type.' });
-  }
+  try {
+    const randomQuestion = await getRandomQuestionByExamType(examType);
+    if (randomQuestion) {
+        res.json({ questions: [randomQuestion] });
+    } else {
+        res.status(404).json({ error: 'No questions available for the specified exam type.' });
+    }
+} catch (err) {
+    res.status(500).json({ error: 'An error occurred while fetching the random question' });
+}
 });
 
-app.post('/api/submit-email', (req, res) => {
+
+app.post('/api/submit-email', async(req, res) => {
   const { email, examType } = req.body;
 
   if (!email || !examType) {
     return res.status(400).json({ error: 'Email and exam type are required' });
   }
 
-  let emailsDB = { emails: [] };
+  const newEmail = new Email({
+    email,
+    examType
+  });
 
-  if (fs.existsSync(EMAIL_DB_PATH)) {
-    emailsDB = JSON.parse(fs.readFileSync(EMAIL_DB_PATH, 'utf8'));
-  }
-
-  emailsDB.emails.push({ email, examType, timestamp: new Date().toISOString() });
-
-  fs.writeFileSync(EMAIL_DB_PATH, JSON.stringify(emailsDB, null, 2), 'utf8');
-
-  res.status(200).json({ message: 'Email saved successfully' });
+  try {
+    await newEmail.save();
+    res.status(200).json({ message: 'Email saved successfully' });
+} catch (err) {
+    res.status(500).json({ error: 'An error occurred while saving the email' });
+}
 });
 
 app.listen(PORT, () => {
